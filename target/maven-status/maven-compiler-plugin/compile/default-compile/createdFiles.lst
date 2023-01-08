@@ -1,0 +1,13 @@
+co\gromao\searchads\core\Category.class
+co\gromao\searchads\db\AdsDaoImpl.class
+co\gromao\searchads\resources\SearchResource.class
+co\gromao\searchads\exception\InvalidPriceException.class
+co\gromao\searchads\health\AppHealthCheck.class
+co\gromao\searchads\exception\EmptyQueryException.class
+co\gromao\searchads\service\SearchService.class
+co\gromao\searchads\SearchAdsApplication.class
+co\gromao\searchads\SearchAdsConfiguration.class
+co\gromao\searchads\db\AdsDao.class
+co\gromao\searchads\exception\InvalidPriceException$InvalidPriceType.class
+co\gromao\searchads\exception\ErrorResponse.class
+co\gromao\searchads\core\Ad.class
