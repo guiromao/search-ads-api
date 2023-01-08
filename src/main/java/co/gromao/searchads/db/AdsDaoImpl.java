@@ -6,6 +6,7 @@ import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery.Builder;
 import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.json.JsonData;
@@ -58,10 +59,11 @@ public class AdsDaoImpl implements AdsDao {
         }
 
         try {
-            SearchResponse<Ad> search = client.search(s -> s
-                            .index(ADS_INDEX)
-                            .query(q -> q.bool(b -> boolQueryBuilder)),
-                    Ad.class);
+            final SearchRequest.Builder searchRequestBuilder = new SearchRequest.Builder()
+                    .index(ADS_INDEX)
+                    .query(q -> q.bool(boolQueryBuilder.build()));
+
+            SearchResponse<Ad> search = client.search(searchRequestBuilder.build(), Ad.class);
 
             return search.hits().hits().stream()
                     .map(Hit::source)

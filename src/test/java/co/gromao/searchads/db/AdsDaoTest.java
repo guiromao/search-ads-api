@@ -2,27 +2,19 @@ package co.gromao.searchads.db;
 
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.ShardStatistics;
+import co.elastic.clients.elasticsearch.core.SearchRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.elasticsearch.core.SearchResponse.Builder;
 import co.elastic.clients.elasticsearch.core.search.Hit;
 import co.elastic.clients.elasticsearch.core.search.HitsMetadata;
-import co.elastic.clients.json.JsonData;
-import co.elastic.clients.json.jackson.JacksonJsonpMapper;
-import co.elastic.clients.transport.ElasticsearchTransport;
-import co.elastic.clients.transport.rest_client.RestClientTransport;
 import co.gromao.searchads.DataUtils;
 import co.gromao.searchads.core.Ad;
-import org.apache.http.HttpHost;
-import org.elasticsearch.client.NodeSelector;
-import org.elasticsearch.client.RestClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -44,20 +36,22 @@ class AdsDaoTest {
 
     @Test
     void testFindAds() throws Exception {
-        Mockito.when(elasticsearchClient.search(any(Function.class), any(Class.class))).thenReturn(searchResponse());
+        final SearchResponse<Ad> expectedResponse = searchResponse();
 
-        List<Ad> test = dao.findByParams("any-text", 0.00, 1000.00);
+        Mockito.when(elasticsearchClient.search(any(SearchRequest.class), any(Class.class))).thenReturn(expectedResponse);
 
-        Assertions.assertEquals(DataUtils.ads().size(), test.size());
+        List<Ad> test = dao.findByParams("Thing", 0.00, 1000.00);
+
+        Assertions.assertEquals(expectedResponse.hits().hits().size(), test.size());
     }
 
-    private SearchResponse<Ad> searchResponse() throws Exception {
+    private SearchResponse<Ad> searchResponse() {
         HitsMetadata.Builder<Ad> hitsMetaDataBuilder = new HitsMetadata.Builder<>();
         hitsMetaDataBuilder.hits(
                 DataUtils.ads().stream()
                         .map(ad -> {
                             Hit.Builder<Ad> hitBuilder = new Hit.Builder<>();
-                            hitBuilder.index("ads").id(ad.getId()).fields(adFieldMapOf(ad));
+                            hitBuilder.index("ads").id(ad.getId()).source(ad);
 
                             return hitBuilder.build();
                         })
@@ -76,16 +70,6 @@ class AdsDaoTest {
                         .total(DataUtils.ads().size())
                         .build())
                 .build();
-    }
-
-    private Map<String, JsonData> adFieldMapOf(Ad ad) {
-        return Map.of(
-                "id", JsonData.of(ad.getId()),
-                "title", JsonData.of(ad.getTitle()),
-                "description", JsonData.of(ad.getDescription()),
-                "price", JsonData.of(ad.getPrice()),
-                "category", JsonData.of(ad.getCategory())
-        );
     }
 
 }

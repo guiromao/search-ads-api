@@ -1,5 +1,4 @@
-Search Ads API
----
+# Search Ads API
 
 An API to search Ads according to 'text', priceFrom, and priceTo.
 
