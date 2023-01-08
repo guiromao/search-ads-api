@@ -3,8 +3,6 @@ d
 4src/main/java/co/gromao/searchads/core/Category.java,6\d\6df8b179e8d5c153b71650a3e92e822a7dbbae07
 J
 dependency-reduced-pom.xml,8\a\8a88dfd5af6f2db5a5431581b56e901f5f143d92
-9
-	README.md,8\e\8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d
 >
 search-ads.yml,6\0\60567f3b9ca3c258c3052243c070e232d4bd4b28
 n

@@ -3,11 +3,21 @@ Search Ads API
 
 An API to search Ads according to 'text', priceFrom, and priceTo.
 
-GET /search?query=yourtext&priceFromEuro=123&priceToEuro=321
+Endpoint: GET /search
+---
 
-1. Run `mvn clean install` to build your application
-1. Start application with `java -jar target/searchAdsApi-1.0-SNAPSHOT.jar server config.yml`
-1. To check that your application is running enter url `http://localhost:8080`
+Parametres:
+----
+- query: the text to query for (mandatory)
+- priceFromEuro: the base price in Euro (not mandatory)
+- priceToEuro: the upper limit price in Euro (not mandatory)
+
+Example: GET /search?query=yourtext&priceFromEuro=123&priceToEuro=321
+
+Exceptions:
+- Empty text query
+- Negative prices
+- 'priceFrom' higher than 'priceTo'
 
 Health Check
 ---
