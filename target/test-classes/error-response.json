@@ -1,0 +1,5 @@
+{
+  "title": "BAD_REQUEST",
+  "code": 400,
+  "message": "Cannot search for an empty string"
+}

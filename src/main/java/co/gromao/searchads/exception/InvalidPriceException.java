@@ -1,5 +1,7 @@
 package co.gromao.searchads.exception;
 
+import co.gromao.searchads.api.ErrorResponse;
+
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;

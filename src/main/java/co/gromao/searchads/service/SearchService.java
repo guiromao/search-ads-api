@@ -5,7 +5,9 @@ import co.gromao.searchads.db.AdsDao;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Singleton
 public class SearchService {
@@ -18,7 +20,10 @@ public class SearchService {
     }
 
     public List<Ad> getAds(String text, Double priceFrom, Double priceTo) {
-        return adsDao.findAds(text, priceFrom, priceTo);
+        // Providing an ordering by price (ASC) as a default sorting
+        return adsDao.findByParams(text, priceFrom, priceTo).stream()
+                .sorted(Comparator.comparing(Ad::getPrice, Comparator.nullsLast(Comparator.naturalOrder())))
+                .collect(Collectors.toList());
     }
 
 }

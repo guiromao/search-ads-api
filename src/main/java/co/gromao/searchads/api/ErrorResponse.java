@@ -1,4 +1,4 @@
-package co.gromao.searchads.exception;
+package co.gromao.searchads.api;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

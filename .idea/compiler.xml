@@ -9,8 +9,5 @@
         <module name="searchads" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="searchAdsApi" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

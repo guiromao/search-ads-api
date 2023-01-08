@@ -3,7 +3,7 @@ package co.gromao.searchads.db;
 import co.elastic.clients.elasticsearch.ElasticsearchClient;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.BoolQuery.Builder;
-import co.elastic.clients.elasticsearch._types.query_dsl.MatchQuery;
+import co.elastic.clients.elasticsearch._types.query_dsl.MultiMatchQuery;
 import co.elastic.clients.elasticsearch._types.query_dsl.RangeQuery;
 import co.elastic.clients.elasticsearch.core.BulkRequest;
 import co.elastic.clients.elasticsearch.core.SearchResponse;
@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static co.gromao.searchads.SearchAdsConfiguration.ADS_INDEX;
 
@@ -37,15 +36,14 @@ public class AdsDaoImpl implements AdsDao {
     }
 
     @Override
-    public List<Ad> findAds(String text, Double priceFrom, Double priceTo) {
+    public List<Ad> findByParams(String text, Double priceFrom, Double priceTo) {
         BoolQuery.Builder boolQueryBuilder = new Builder();
 
+        MultiMatchQuery matchQuery = MultiMatchQuery.of(
+                match -> match.fields(List.of("title", "description")).query(text)
+        );
         // Add query for text
-        boolQueryBuilder.must(MatchQuery.of(match -> match
-                .field("name")
-                .field("description")
-                .query(text)
-        )._toQuery());
+        boolQueryBuilder.must(matchQuery._toQuery());
 
         RangeQuery.Builder rangeBuilder = new RangeQuery.Builder();
 
@@ -62,14 +60,13 @@ public class AdsDaoImpl implements AdsDao {
         try {
             SearchResponse<Ad> search = client.search(s -> s
                             .index(ADS_INDEX)
-                            .query(q -> q
-                                    .bool(b -> boolQueryBuilder)
-                            ),
+                            .query(q -> q.bool(b -> boolQueryBuilder)),
                     Ad.class);
 
             return search.hits().hits().stream()
                     .map(Hit::source)
-                    .collect(Collectors.toList());
+                    .filter(Objects::nonNull)
+                    .toList();
 
         } catch (IOException e) {
             LOG.error("Could not read database results", e);
@@ -79,10 +76,10 @@ public class AdsDaoImpl implements AdsDao {
     }
 
     @Override
-    public void save(List<Ad> ads) {
+    public void saveAll(List<Ad> ads) {
         final BulkRequest.Builder bulkBuilder = new BulkRequest.Builder();
 
-        for (Ad ad: ads) {
+        for (Ad ad : ads) {
             bulkBuilder.operations(op ->
                     op.index(i -> i
                             .index(ADS_INDEX)

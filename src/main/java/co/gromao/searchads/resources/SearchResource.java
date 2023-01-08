@@ -44,7 +44,7 @@ public class SearchResource {
             throw new EmptyQueryException();
         }
 
-        if ((Objects.nonNull(priceFrom) && priceFrom < 0) || Objects.nonNull(priceTo) && priceTo < 0) {
+        if ((Objects.nonNull(priceFrom) && priceFrom < 0) || (Objects.nonNull(priceTo) && priceTo < 0)) {
             throw new InvalidPriceException(InvalidPriceType.NO_NEGATIVE);
         }
 

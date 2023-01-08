@@ -60,7 +60,7 @@ public class SearchAdsApplication extends Application<SearchAdsConfiguration> {
         environment.jersey().register(searchResource);
 
         // Save some Ads on the database
-        adsDao.save(ads());
+        adsDao.saveAll(ads());
     }
 
     private List<Ad> ads() {
